@@ -4,6 +4,13 @@ const pizzaController = {
   // get all the pizzas
   getAllPizza(req,res) {
       Pizza.find({})
+      .populate({
+        path: 'comments',
+        // tells MONGODB we do not want this field with the "-" indicator
+        select: '-__v'
+      })
+      .select('-__v')
+      .sort({ _id: -1 })
       .then(dbPizzaData => res.json(dbPizzaData))
       .catch(err => {
           console.log(err);
@@ -14,6 +21,11 @@ const pizzaController = {
   // get one pizza with id
   getPizzaById({ params }, res) {
     Pizza.findOne({ _id: params.id })
+      .populate({
+        path: 'comments',
+        select: '-__v'
+      })
+      .select('-__v')
       .then(dbPizzaData => {
         // If no pizza is found, send 404
         if (!dbPizzaData) {
